@@ -80,7 +80,7 @@
  [],
  False,
  False,
- 1721999871,
+ 1722233693,
  [('run.exe',
    'C:\\RegosPriceChechkerProject\\kivy_venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\run.exe',
    'EXECUTABLE')],

@@ -14,7 +14,7 @@ from item_infos import ItemToCsv
 import json
 import pyautogui
 
-with open('settings.json', 'r') as settings_file:
+with open('settings.json', 'r', encoding='utf-8') as settings_file:
     settings = json.load(settings_file)
 
 item_to_csv = ItemToCsv()
@@ -58,7 +58,8 @@ class PriceCheckerApp(App):
             background_normal='',
             background_active='',
             background_color=self.format_rgba_color(self.background_color),
-            foreground_color=(1, 1, 1, 1))
+            foreground_color=self.format_rgba_color(settings['name_font_color'])
+        )
 
         Clock.schedule_interval(self.barcode_focus, 1)
 

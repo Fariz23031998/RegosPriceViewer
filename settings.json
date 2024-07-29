@@ -2,8 +2,8 @@
 	"sync_time": 600,
 	"name_font_size": 90,
 	"price_font_size": 200,
-	"background_color": [0, 0, 0, 1],
-    "name_font_color": [245, 40, 145, 1],
-	"price_font_color": [255, 255, 255, 1],
+	"background_color": [255, 255, 255, 1],
+    "name_font_color": [0, 0, 0, 1],
+	"price_font_color": [0, 0, 0, 1],
 	"update_screen_time": 15
 }

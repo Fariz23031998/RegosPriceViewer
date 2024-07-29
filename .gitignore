@@ -1,0 +1,4 @@
+*.log
+kivy_venv/
+dist/
+build/

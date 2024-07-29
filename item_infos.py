@@ -1,25 +1,25 @@
 import fdb
 import pandas as pd
 import json
-import sys
-from pathlib import Path
+import win32api
 
 
-with open('connection.json', 'r') as con_file:
+with open('connection.json', 'r', encoding='utf-8') as con_file:
     con = json.load(con_file)
 
 
 items_info_csv = "items_info.csv"
 barcodes_csv = 'barcodes.csv'
 prices_csv = 'prices.csv'
-
+long_path = con['path']
+short_path = win32api.GetShortPathName(long_path)
 
 
 class ItemToCsv:
     def __init__(self):
         self.price_type = con["price_type"]
         self.host = con['host']
-        self.database = con['path']
+        self.database = short_path
         self.user = con["user"]
         self.password = con["password"]
         self.con = None
