@@ -157,7 +157,7 @@ class PriceCheckerApp(App):
         else:
             self.cancel_event()
             self.result_name.text = 'Не получается подключится к базу данных...'
-            self.reset_screen = Clock.schedule_once(self.update_screen, settings['update_screen_time'])
+            self.reset_screen = Clock.schedule_once(self.update_screen, 50)
 
     def barcode_focus(self, dt):
         self.barcode_input.focus = True

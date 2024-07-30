@@ -1,6 +1,8 @@
 import fdb
 import pandas as pd
 import json
+
+import pywintypes
 import win32api
 
 
@@ -12,7 +14,11 @@ items_info_csv = "items_info.csv"
 barcodes_csv = 'barcodes.csv'
 prices_csv = 'prices.csv'
 long_path = con['path']
-short_path = win32api.GetShortPathName(long_path)
+
+try:
+    short_path = win32api.GetShortPathName(long_path)
+except pywintypes.error:
+    short_path = con['path']
 
 
 class ItemToCsv:
@@ -86,3 +92,5 @@ class ItemToCsv:
         self.cursor.close()
         self.con.close()
 
+
+test = ItemToCsv()
