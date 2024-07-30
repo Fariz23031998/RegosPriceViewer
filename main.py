@@ -45,10 +45,8 @@ class PriceCheckerApp(App):
         )
         self.background_color = settings['background_color']
 
-        self.update_csv(None)
-        self.barcode_df = pd.read_csv('barcodes.csv')
-        self.items_df = pd.read_csv('items_info.csv')
-        self.prices_df = pd.read_csv('prices.csv')
+        if self.update_csv(None) == 1:
+            self.read_csv()
 
         function_layout = BoxLayout(orientation='horizontal', size_hint=(None, None), width=500, height=30)
 
@@ -96,7 +94,9 @@ class PriceCheckerApp(App):
         self.cancel_event()
         barcode = self.barcode_input.text
         item_id = self.get_item_id_from_barcode(barcode)
-        if item_id:
+        if item_id == "Данные Обновились":
+            self.result_name.text = "Данные Обновились"
+        elif item_id:
             item_info = self.get_item_info_by_id(item_id)
             if item_info:
                 self.result_name.text = f"{item_info[2]} ({item_info[7]})"
@@ -120,10 +120,14 @@ class PriceCheckerApp(App):
     def get_item_id_from_barcode(self, barcode):
         if barcode == "quit":
             self.stop()
-        filtered_df = self.barcode_df[self.barcode_df['BRCD_VALUE'].astype(str) == barcode]
-        if not filtered_df.empty:
-            return filtered_df['BRCD_ITEM'].values[0]
-        return None
+        elif barcode == "update":
+            self.update_csv(None)
+            return "Данные Обновились"
+        else:
+            filtered_df = self.barcode_df[self.barcode_df['BRCD_VALUE'].astype(str) == barcode]
+            if not filtered_df.empty:
+                return filtered_df['BRCD_ITEM'].values[0]
+            return None
 
     def get_item_info_by_id(self, item_id):
         filtered_df = self.items_df[self.items_df['ITM_ID'] == item_id]
@@ -151,13 +155,12 @@ class PriceCheckerApp(App):
     def update_csv(self, dt):
         if item_to_csv.connect_server():
             item_to_csv.get_items_info()
-            self.barcode_df = pd.read_csv('barcodes.csv')
-            self.items_df = pd.read_csv('items_info.csv')
-            self.prices_df = pd.read_csv('prices.csv')
+            self.read_csv()
         else:
             self.cancel_event()
             self.result_name.text = 'Не получается подключится к базу данных...'
             self.reset_screen = Clock.schedule_once(self.update_screen, 50)
+            return 1
 
     def barcode_focus(self, dt):
         self.barcode_input.focus = True
@@ -180,10 +183,13 @@ class PriceCheckerApp(App):
     def cancel_event(self):
         try:
             Clock.unschedule(self.reset_screen)
-            print("rescheduled")
         except AttributeError:
             pass
-            print('passed')
+
+    def read_csv(self):
+        self.barcode_df = pd.read_csv('barcodes.csv')
+        self.items_df = pd.read_csv('items_info.csv')
+        self.prices_df = pd.read_csv('prices.csv')
 
 
 if __name__ == '__main__':

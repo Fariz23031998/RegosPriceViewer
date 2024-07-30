@@ -1,6 +1,6 @@
 {	
-	"host": "192.168.199.100",
-	"path": "T:\\REGOS БАЗА\\REGOS.FDB",
+	"host": "localhost",
+	"path": "D:\\REGOS БАЗА\\REGOS.FDB",
 	"user": "SYSDBA",
 	"password": "masterkey",
 	"price_type": 1
