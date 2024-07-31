@@ -43,11 +43,9 @@ class ItemToCsv:
             )
 
         except fdb.fbcore.DatabaseError:
-            print('Не получается подключится к базу данных...')
             return False
 
         else:
-            print('Connection was successful!')
             self.cursor = self.con.cursor()
             return True
 

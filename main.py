@@ -45,7 +45,7 @@ class PriceCheckerApp(App):
         )
         self.background_color = settings['background_color']
 
-        if self.update_csv(None) == 1:
+        if not self.update_csv(None):
             self.read_csv()
 
         function_layout = BoxLayout(orientation='horizontal', size_hint=(None, None), width=500, height=30)
@@ -94,8 +94,11 @@ class PriceCheckerApp(App):
         self.cancel_event()
         barcode = self.barcode_input.text
         item_id = self.get_item_id_from_barcode(barcode)
-        if item_id == "Данные Обновились":
-            self.result_name.text = "Данные Обновились"
+        if item_id == "failed":
+            pass
+        elif item_id == "succeed":
+            self.result_name.text = 'Данные Обновились'
+            self.result_price.text = ''
         elif item_id:
             item_info = self.get_item_info_by_id(item_id)
             if item_info:
@@ -121,8 +124,10 @@ class PriceCheckerApp(App):
         if barcode == "quit":
             self.stop()
         elif barcode == "update":
-            self.update_csv(None)
-            return "Данные Обновились"
+            if self.update_csv(None):
+                return "succeed"
+            else:
+                return "failed"
         else:
             filtered_df = self.barcode_df[self.barcode_df['BRCD_VALUE'].astype(str) == barcode]
             if not filtered_df.empty:
@@ -156,11 +161,13 @@ class PriceCheckerApp(App):
         if item_to_csv.connect_server():
             item_to_csv.get_items_info()
             self.read_csv()
+            return True
         else:
             self.cancel_event()
             self.result_name.text = 'Не получается подключится к базу данных...'
+            self.result_price.text = ''
             self.reset_screen = Clock.schedule_once(self.update_screen, 50)
-            return 1
+            return False
 
     def barcode_focus(self, dt):
         self.barcode_input.focus = True
@@ -187,9 +194,13 @@ class PriceCheckerApp(App):
             pass
 
     def read_csv(self):
-        self.barcode_df = pd.read_csv('barcodes.csv')
-        self.items_df = pd.read_csv('items_info.csv')
-        self.prices_df = pd.read_csv('prices.csv')
+        try:
+            self.barcode_df = pd.read_csv('barcodes.csv')
+            self.items_df = pd.read_csv('items_info.csv')
+            self.prices_df = pd.read_csv('prices.csv')
+        except FileNotFoundError:
+            self.result_name.text = 'Не найдено .csv файл. Проверьте соединение с База данных.'
+            Clock.schedule_once(self.stop, 50)
 
 
 if __name__ == '__main__':
